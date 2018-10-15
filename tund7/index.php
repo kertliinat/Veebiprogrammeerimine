@@ -18,6 +18,6 @@
 	Need ei oma mingit sügavat sisu ja nende kopeerimine ei oma mõtet.</p>
 	<hr>
 	<p><a href="newuser.php">Loo kasutaja</a>!</p>
-	
+	<p><a href="index_3.php">Logi sisse!</a></p>
 </body>
 </html>

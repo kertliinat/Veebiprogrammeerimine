@@ -192,5 +192,6 @@
 	</form>
 	
 
+	<p><a href="index_3.php">Logi oma tuliuue kasutajaga sisse!</a></p>
 </body>
 </html>

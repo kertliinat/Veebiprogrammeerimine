@@ -1,7 +1,5 @@
 <?php
   require("functions.php");
-  //kui pole sisse loginud
-  
   //kui pole sisselogitud
   if(!isset($_SESSION["userId"])){
 	  header("Location: index_3.php");
@@ -29,6 +27,7 @@
 	<ul>
 	  <li> Valideeri anonüümseid <a href ="validatemsg.php">sõnumeid</a></li>
 	  <li> Vaata <a href="users.php">kasutajaid</a></li>
+	  <li><a href="validatedmessages.php">Valideeritud sõnumid kasutajate kaupa</a></li>
 	</ul>
 	
   </body>

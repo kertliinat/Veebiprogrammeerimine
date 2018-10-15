@@ -34,7 +34,9 @@
 		<input name="submitMessage" type="submit" value="Salvesta sõnum">
 	</form>
 	<br>
+	<p><a href="index_3.php">Tagasi koju!</a></p>
 	<p>
+	
 	<?php
 		echo $notice;
 	?>

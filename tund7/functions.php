@@ -6,6 +6,75 @@ $database = "if18_kert_li_1";
 
 //alustan sessiooni
 session_start();
+
+
+//kasutajaprofiili väljastamine
+  function showmyprofile(){
+	$mysqli = new mysqli($GLOBALS["serverHost"], $GLOBALS["serverUsername"], $GLOBALS["serverPassword"], $GLOBALS["database"]);
+    $stmt = $mysqli->prepare("SELECT description, bgcolor, txtcolor FROM vpuserprofiles WHERE userid=?");
+	echo $mysqli->error;
+	$stmt->bind_param("i", $_SESSION["userId"]);
+	$stmt->bind_result($description, $bgcolor, $txtcolor);
+	$stmt->execute();
+	$profile = new Stdclass();
+	if($stmt->fetch()){
+		$profile->description = $description;
+		$profile->bgcolor = $bgcolor;
+		$profile->txtcolor = $txtcolor;
+	} else {
+		$profile->description = "";
+		$profile->bgcolor = "";
+		$profile->txtcolor = "";
+	}
+	$stmt->close();
+	$mysqli->close();
+	return $profile;
+  }
+
+function readallvalidatedmessagesbyuser() {
+	$msghtml = "";
+	$mysqli = new mysqli($GLOBALS["serverHost"], $GLOBALS["serverUsername"], $GLOBALS["serverPassword"], $GLOBALS["database"]);
+	$stmt = $mysqli->prepare("SELECT id, firstname, lastname FROM vpusers");
+	echo $mysqli->error;
+	$stmt->bind_result($idFromDb, $firstnameFromDb, $lastnameFromDb);
+	
+	$stmt2 = $mysqli->prepare("SELECT message, valid FROM vpamsg WHERE validator=?");
+	echo $mysqli->error;
+	$stmt2->bind_param("i",$idFromDb);
+	$stmt2->bind_result($msgFromDb, $validFromDb);
+	
+	$stmt->execute();
+	$stmt->store_result();// jätab saadu pikemalt meelde, nii saav ka järgmine päring seda kasutada
+	
+	while($stmt->fetch()) {
+		//panen valideerija nime paika
+		$msghtml .="<h3>" .$firstnameFromDb. " " .$lastnameFromDb. "</h3> \n";
+		$loendur = 0;
+		$stmt2->execute();
+		while($stmt2->fetch()){
+			$msghtml .= "<p><b>";
+			if($validFromDb == 0){
+				$msghtml .= "Keelatud: </b>";
+			}else{
+				$msghtml .= "Lubatud: </b>";
+			}
+			$msghtml .= $msgFromDb ."</p> \n";
+			$loendur ++;
+		}
+		if ($loendur > 0) {
+			$result .= $msghtml;
+		}
+		$msghtml = "";
+	}
+	
+	$stmt->close();
+	$stmt2->close();
+	$mysqli->close();
+	return $result;
+	
+}
+
+
 function allusers () {
 	$notice = "";
 	$mysqli = new mysqli($GLOBALS["serverHost"], $GLOBALS["serverUsername"], $GLOBALS["serverPassword"], $GLOBALS["database"]);
