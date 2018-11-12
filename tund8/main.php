@@ -23,6 +23,7 @@
 	  <li> Vaata <a href="users.php">kasutajaid</a></li>
 	  <li><a href="validatedmessages.php">Valideeritud sõnumid kasutajate kaupa</a></li>
 	  <li><a href="userprofile.php">Muuda enda kasutajaprofiili</a></li>
+	  <li> Fotode <a href="photoupload.php">üleslaadimine</a>.</li>
 	</ul>
 	
   </body>

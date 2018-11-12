@@ -8,9 +8,27 @@ $database = "if18_kert_li_1";
 session_start();
 
 
+function addPhotoData($fileName, $alt, $privacy) {
+	$notice = "";
+	$mysqli = new mysqli($GLOBALS["serverHost"], $GLOBALS["serverUsername"], $GLOBALS["serverPassword"], $GLOBALS["database"]);
+    $stmt = $mysqli->prepare("INSERT INTO vpphotos (userid, filename, alttext, privacy) VALUES (?, ?, ?, ?)");
+	echo $mysqli->error;
+	$stmt->bind_param("issi",$_SESSION["userId"], $fileName, $alt, $privacy);
+	if($stmt->execute()) {
+		echo "Andmebaasiga on korras!";
+		}else{
+			echo "Midagi läks nihu!";
+		}
+	
+	
+	$stmt->close();
+	$mysqli->close();
+	return $notice;
+}
+
  function readprofilecolors(){
 	$mysqli = new mysqli($GLOBALS["serverHost"], $GLOBALS["serverUsername"], $GLOBALS["serverPassword"], $GLOBALS["database"]);
-    $stmt = $mysqli->prepare("SELECT bgcolor, txtcolor FROM vpuserprofiles3 WHERE userid=?");
+    $stmt = $mysqli->prepare("SELECT bgcolor, txtcolor FROM vpuserprofiles WHERE userid=?");
 	echo $mysqli->error;
 	$stmt->bind_param("i", $_SESSION["userId"]);
 	$stmt->bind_result($bgcolor, $txtcolor);
@@ -39,7 +57,7 @@ session_start();
 	if($stmt->fetch()){
 		//profiil juba olemas, uuendame
 		$stmt->close();
-		$stmt = $mysqli->prepare("UPDATE vpuserprofiles SET description=?, bgcolor=?, txtcolor=? WHERE id=?");
+		$stmt = $mysqli->prepare("UPDATE vpuserprofiles SET description=?, bgcolor=?, txtcolor=? WHERE userid=?");
 		echo $mysqli->error;
 		$stmt->bind_param("sssi", $desc, $bgcol, $txtcol, $_SESSION["userId"]);
 		if($stmt->execute()){
@@ -53,7 +71,7 @@ session_start();
 		//profiili pole, salvestame
 		$stmt->close();
 		//INSERT INTO vpusers (firstname, lastname, birthdate, gender, email, password) VALUES(?,?,?,?,?,?)"
-		$stmt = $mysqli->prepare("INSERT INTO vpuserprofiles3 (userid, description, bgcolor, txtcolor) VALUES(?,?,?,?)");
+		$stmt = $mysqli->prepare("INSERT INTO vpuserprofiles (userid, description, bgcolor, txtcolor) VALUES(?,?,?,?)");
 		echo $mysqli->error;
 		$stmt->bind_param("isss", $_SESSION["userId"], $desc, $bgcol, $txtcol);
 		if($stmt->execute()){
@@ -205,14 +223,20 @@ function signin($email, $password) {
 				$_SESSION["userFirstName"] = $firstnameFromDb;
 				$_SESSION["userLastName"] = $lastnameFromDb;
 				$_SESSION["useremail"] = $email;
+				readprofilecolors();
+				echo $mysqli->error;
+				
+				
+				
+				
 				//liigume kohe vaid sisselogitutele mõeldud pealehele
 				$stmt->close();
 				$mysqli->close();
 				header("Location: main.php");
 				exit();
-			}else {
-				$notice = "Vale salasõna!";
-			}
+				}else {
+				 $notice = "Vale salasõna!";
+				}
 		} else {
 			$notice = "Sellist kasutajat (" .$email .") ei leitud!";
 		}
@@ -274,7 +298,7 @@ function signin($email, $password) {
   function readallmessages(){
 	$notice = "";
 	$mysqli = new mysqli($GLOBALS["serverHost"], $GLOBALS["serverUsername"], $GLOBALS["serverPassword"], $GLOBALS["database"]);
-	$stmt = $mysqli->prepare("SELECT message FROM vpamsg3");
+	$stmt = $mysqli->prepare("SELECT message FROM vpamsg");
 	echo $mysqli->error;
 	$stmt->bind_result($msg);
 	$stmt->execute();

@@ -14,6 +14,27 @@
   $mydescription = "Pole iseloomustust lisanud.";
   $mybgcolor = "#FFFFFF";
   $mytxtcolor = "#000000";
+  
+  if(isset($_POST["submitProfile"])){
+	$notice = storeuserprofile($_POST["description"], $_POST["bgcolor"], $_POST["txtcolor"]);
+	if(!empty($_POST["description"])){
+	  $mydescription = $_POST["description"];
+	}
+	$mybgcolor = $_POST["bgcolor"];
+	$mytxtcolor = $_POST["txtcolor"];
+  } else {
+	$myprofile = showmyprofile();
+	if($myprofile->description != ""){
+	  $mydescription = $myprofile->description;
+    }
+    if($myprofile->bgcolor != ""){
+	  $mybgcolor = $myprofile->bgcolor;
+    }
+    if($myprofile->txtcolor != ""){
+	  $mytxtcolor = $myprofile->txtcolor;
+    }
+  }
+	
 ?>
 <!DOCTYPE html>
 <html>
